@@ -18,7 +18,7 @@ function Board({ xIsNext, squares, onPlay }) {
     const nextSquares = squares.slice();
     // if xIsNext is true, assign X to copied square, else assign O
     xIsNext ? (nextSquares[i] = "X") : (nextSquares[i] = "O");
-    // call onPlay function with the copied squares
+    // call onPlay function on parent to update states
     onPlay(nextSquares);
   }
 
@@ -104,7 +104,7 @@ function calculateWinner(squares) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6]
+    [2, 4, 6],
   ];
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
