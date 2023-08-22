@@ -10,7 +10,7 @@ function Square({ value, onSquareClick }) {
 
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
-    // Check if has winner OR if the sqaure is occupied
+    // Check if has winner OR if the square is occupied
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -18,10 +18,10 @@ function Board({ xIsNext, squares, onPlay }) {
     const nextSquares = squares.slice();
     // if xIsNext is true, assign X to copied square, else assign O
     xIsNext ? (nextSquares[i] = "X") : (nextSquares[i] = "O");
-    // call onPlay function with the copied squares
+    // call handlePlay(nextSquares) in parent to update states
     onPlay(nextSquares);
   }
-
+  // Display status text
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
@@ -68,9 +68,10 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
+    // update currentMove to the move that the index user selected
     setCurrentMove(nextMove);
   }
-
+  // Iterate moves as button
   const moves = history.map((squares, move) => {
     let description;
     move > 0
@@ -96,6 +97,7 @@ export default function Game() {
 }
 
 function calculateWinner(squares) {
+  // List out winning lines rules
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -104,13 +106,18 @@ function calculateWinner(squares) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6]
+    [2, 4, 6],
   ];
+  // loop through the winning lines
   for (let i = 0; i < lines.length; i++) {
+    // Destructure the lines numbers
     const [a, b, c] = lines[i];
+    // if the squares[a] is not null AND squares[b] & squares[c] same with squares[a]
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      // return the "X" and "O" winner here
       return squares[a];
     }
   }
+  // return null if none of conditions are met (no winner)
   return null;
 }
