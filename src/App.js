@@ -13,6 +13,18 @@ function Square({ value, onSquareClick, winnerBlock }) {
 
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
+    // jot down locations when clicked
+    const locations = [
+      [1, 1],
+      [2, 1],
+      [3, 1],
+      [1, 2],
+      [2, 2],
+      [3, 2],
+      [1, 3],
+      [2, 3],
+      [3, 3],
+    ];
     // Check if has winner OR if the square is occupied
     if (calculateWinner(squares) || squares[i]) {
       return;
@@ -21,8 +33,8 @@ function Board({ xIsNext, squares, onPlay }) {
     const nextSquares = squares.slice();
     // if xIsNext is true, assign X to copied square, else assign O
     xIsNext ? (nextSquares[i] = "X") : (nextSquares[i] = "O");
-    // call handlePlay(nextSquares) in parent to update states
-    onPlay(nextSquares);
+    // call handlePlay(nextSquares,locations[i]) in parent to update states
+    onPlay(nextSquares, locations[i]);
   }
   // Display status text
   const { winner, winnerLine } = calculateWinner(squares) || {};
@@ -69,16 +81,23 @@ function Board({ xIsNext, squares, onPlay }) {
 
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [locationHistory, setLocationHistory] = useState([Array(2).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const [asc, setAsc] = useState(true);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
-  function handlePlay(nextSquares) {
+  function handlePlay(nextSquares, nextLocation) {
     // make history with the nextSquares
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    // make history with the nextLocation
+    const nextLocationHistory = [
+      ...locationHistory.slice(0, currentMove + 1),
+      nextLocation,
+    ];
     // update history
     setHistory(nextHistory);
+    setLocationHistory(nextLocationHistory);
     // update currentMove to point to the latest history entry
     setCurrentMove(nextHistory.length - 1);
   }
@@ -94,15 +113,17 @@ export default function Game() {
   }
 
   // Iterate moves
+  // Display the location for each move in the format (row, col) in the move history list.
   const moves = history.map((squares, move) => {
     let description;
+    const [x, y] = locationHistory[move];
     move > 0
-      ? (description = "Go to move #" + move)
+      ? (description = `Go to move # ${move} (${x},${y})`)
       : (description = "Go to game start");
     return (
       <li key={move}>
         {currentMove === move ? (
-          <p>You are at move {move}</p>
+          <p>You are at move {`${move} (${locationHistory[currentMove]})`}</p>
         ) : (
           <button onClick={() => jumpTo(move)}>{description}</button>
         )}
