@@ -71,7 +71,7 @@ export default function Game() {
     // update currentMove to the move that the index user selected
     setCurrentMove(nextMove);
   }
-  // Iterate moves as button
+  // Iterate moves
   const moves = history.map((squares, move) => {
     let description;
     move > 0
@@ -79,7 +79,11 @@ export default function Game() {
       : (description = "Go to game start");
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        {currentMove === move ? (
+          <p>You are at move {move}</p>
+        ) : (
+          <button onClick={() => jumpTo(move)}>{description}</button>
+        )}
       </li>
     );
   });
